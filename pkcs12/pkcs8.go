@@ -106,7 +106,6 @@ func ParsePKCS8PrivateKey(der []byte) (key interface{}, err error) {
 
 func parseECPrivateKey(namedCurveOID *asn1.ObjectIdentifier, der []byte) (key *ecdsa.PrivateKey, err error) {
 	var privKey ecPrivateKey
-	fmt.Println("der", hex.EncodeToString(der))
 	if _, err := asn1.Unmarshal(der, &privKey); err != nil {
 		return nil, errors.New("x509: failed to parse EC private key: " + err.Error())
 	}
