@@ -1,4 +1,5 @@
 package websvr
+
 import (
 	"crypto/tls"
 	"fmt"
@@ -7,24 +8,24 @@ import (
 	"net/http"
 	"testing"
 	"time"
-	"github.com/tjfoc/gmsm/x509"
 
-	"github.com/tjfoc/gmsm/gmtls"
+	"github.com/sansec-ai/gmsm/x509"
+
+	"github.com/sansec-ai/gmsm/gmtls"
 )
 
 const (
 	// rsaCertPath = "certs/rsa_sign.cer"
 	// rsaKeyPath  = "certs/rsa_sign_key.pem"
-    rsaCacertPath="certs/rsa_CA.cer"
+	rsaCacertPath = "certs/rsa_CA.cer"
 	// sm2SignCertPath = "certs/sm2_sign_cert.cer"
 	// sm2SignKeyPath  = "certs/sm2_sign_key.pem"
 	// sm2EncCertPath  = "certs/sm2_enc_cert.cer"
 	// sm2EncKeyPath   = "certs/sm2_enc_key.pem"
 	// SM2CaCertPath   = "certs/SM2_CA.cer"
-	sm2UserCertPath ="certs/sm2_auth_cert.cer"
-	sm2UserKeyPath= "certs/sm2_auth_key.pem"
+	sm2UserCertPath = "certs/sm2_auth_cert.cer"
+	sm2UserKeyPath  = "certs/sm2_auth_key.pem"
 )
-
 
 func ServerRun() {
 	//config, err := loadRsaConfig()
@@ -91,8 +92,8 @@ func gmClientRun() {
 	cert, err := gmtls.LoadX509KeyPair(sm2UserCertPath, sm2UserKeyPath)
 
 	config := &gmtls.Config{
-		GMSupport: &gmtls.GMSupport{},
-		RootCAs:   certPool,
+		GMSupport:    &gmtls.GMSupport{},
+		RootCAs:      certPool,
 		Certificates: []gmtls.Certificate{cert},
 	}
 

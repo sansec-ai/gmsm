@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tjfoc/gmsm/gmtls"
-	"github.com/tjfoc/gmsm/gmtls/gmcredentials/echo"
-	"github.com/tjfoc/gmsm/x509"
+	"github.com/sansec-ai/gmsm/gmtls"
+	"github.com/sansec-ai/gmsm/gmtls/gmcredentials/echo"
+	"github.com/sansec-ai/gmsm/x509"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

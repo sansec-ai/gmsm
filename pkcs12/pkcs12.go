@@ -20,9 +20,10 @@ import (
 	"encoding/hex"
 	"encoding/pem"
 	"errors"
-	"github.com/tjfoc/gmsm/sm2"
-x 	"github.com/tjfoc/gmsm/x509"
-	"io/ioutil"
+	"os"
+
+	"github.com/sansec-ai/gmsm/sm2"
+	x "github.com/sansec-ai/gmsm/x509"
 )
 
 var (
@@ -166,6 +167,11 @@ func convertBag(bag *safeBag, password []byte) (*pem.Block, error) {
 			block.Bytes = x509.MarshalPKCS1PrivateKey(key)
 		case *ecdsa.PrivateKey:
 			block.Bytes, err = x509.MarshalECPrivateKey(key)
+			if err != nil {
+				return nil, err
+			}
+		case *sm2.PrivateKey:
+			block.Bytes, err = x.MarshalSm2PrivateKey(key, nil)
 			if err != nil {
 				return nil, err
 			}
@@ -557,16 +563,18 @@ func makeSafeContents(bags []safeBag, password []byte) (ci contentInfo, err erro
 	}
 	return
 }
+
 func SM2P12Encrypt(certificate *x.Certificate, pwd string, priv *sm2.PrivateKey, fileName string) error {
 	pfxDataNew, err := Encode(priv, certificate, nil, pwd)
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(fileName, pfxDataNew, 0666)
+	err = os.WriteFile(fileName, pfxDataNew, 0666)
 	return err
 }
+
 func SM2P12Decrypt(fileName string, pwd string) (*x.Certificate, *sm2.PrivateKey, error) {
-	pfxData, _ := ioutil.ReadFile(fileName)
+	pfxData, _ := os.ReadFile(fileName)
 	pv, cer, err := DecodeAll(pfxData, pwd)
 	if err != nil {
 		return nil, nil, err
@@ -584,7 +592,7 @@ func SM2P12Decrypt(fileName string, pwd string) (*x.Certificate, *sm2.PrivateKey
 				PublicKey: *sm2pub,
 				D:         k.D,
 			}
-			if !k.IsOnCurve(k.X,k.Y) {
+			if !k.IsOnCurve(k.X, k.Y) {
 				return nil, nil, errors.New("error while validating SM2 private key: %v")
 			}
 			return cer[0], sm2Pri, nil
@@ -592,5 +600,5 @@ func SM2P12Decrypt(fileName string, pwd string) (*x.Certificate, *sm2.PrivateKey
 	default:
 		return nil, nil, errors.New("unexpected type for p12 private key")
 	}
-	return nil,nil,nil
+	return nil, nil, nil
 }
